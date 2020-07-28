@@ -111,6 +111,13 @@ p = IngestClient(es_client).put_pipeline(id='ingest_processor', body={
 def create_index(index_name, mappings):
     es_client.indices.create(index=index_name, body=mappings)
 
+def new_config(method, n_clusters=3, min_length=100, max_length=100000, vector_dimension=512, description="", url = "http://127.0.0.1:8000/api/v1/config/")
+    payload = {"method": method, "n_clusters": n_clusters, "min_length": min_length, "max_length": max_length, "vector_dimension": vector_dimension, "description" : description}
+    headers = {'Authorization': 'Bearer {}'.format(token),
+            'Content-Type': 'application/json'}
+    response = requests.request("POST", url, headers=headers, data = payload)
+    print(response.text.encode('utf8'))
+    
 def vectoREST(text, url = "http://127.0.0.1:8000/api/v1/vectors/fr/", token = token):
     payload = {'content': text}
     headers = {'Authorization': 'Bearer {}'.format(token)}
