@@ -111,11 +111,11 @@ p = IngestClient(es_client).put_pipeline(id='ingest_processor', body={
 def create_index(index_name, mappings):
     es_client.indices.create(index=index_name, body=mappings)
 
-def new_config(method, n_clusters=3, min_length=100, max_length=100000, vector_dimension=512, description="", url = "http://127.0.0.1:8000/api/v1/config/"):
-    payload = {"method": method, "n_clusters": n_clusters, "min_length": min_length, "max_length": max_length, "vector_dimension": vector_dimension, "description" : description}
+def new_config(method, n_clusters=3, min_length=100, max_length=100000, vector_dimension=512, description="non-empty description", url = "http://127.0.0.1:8000/api/v1/config/"):
+    payload = {"method": method ,"n_clusters": n_clusters , "min_length": min_length, "max_length": max_length, "vector_dimension": vector_dimension, "description": description}
     headers = {'Authorization': 'Bearer {}'.format(token),
             'Content-Type': 'application/json'}
-    response = requests.request("POST", url, headers=headers, data = payload)
+    response = requests.request("POST", url, headers=headers, data = json.dumps(payload))
     print(response.text.encode('utf8'))
     
 def vectoREST(text, url = "http://127.0.0.1:8000/api/v1/vectors/fr/", token = token):
@@ -157,13 +157,17 @@ def index_file(filepath, index, id):
         }
     })
 
-def index_directory(dir_path):
-    for i, f  in enumerate(tqdm(os.listdir(dir_path))):
+def index_directory(dir_path, limit=None):
+    files_to_index = os.listdir(dir_path)
+    if limit:
+        files_to_index = files_to_index[:int(limit)]
+    for i, f  in enumerate(tqdm(files_to_index)):
         index_file(os.path.join(dir_path, f), index_name, i)
 
 
+new_config(input("Method :"))
 es_client.indices.delete(index=index_name, ignore=[400, 404])
 create_index(index_name, mappings)
-index_directory(os.path.join(os.path.dirname(__file__),"Gutenberg/txt/"))
+index_directory(os.path.join(os.path.dirname(__file__),"Gutenberg/txt/"), limit=input("Limit for number of files (leave blank to index whole directory):"))
 
 
