@@ -58,5 +58,5 @@ Reference : {}
 
 Neighbors : 
 {}
-""".format(reference, '\n'.join(["Name : {} Score : {}".format(n,s) for n,s in knn])))
+""".format(reference, '\n'.join(["Name : {} Score : {}".format(os.path.basename(n),s) for n,s in knn])))
 
