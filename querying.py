@@ -46,17 +46,17 @@ def get_knn_by_id(id,k):
                         })['hits']['hits']]
 
 
+keep_going = True
 
-id = input("Id of reference document :")
-k = input("Number of neighbors to search for :")
+while keep_going:
+    id = input("Id of reference document :")
+    k = input("Number of neighbors to search for :")
+    knn = get_knn_by_id(id,k)
+    reference = get_name_by_id(id)
+    print("""
+    Reference : {}
 
-knn = get_knn_by_id(id,k)
-reference = get_name_by_id(id)
-
-print("""
-Reference : {}
-
-Neighbors : 
-{}
-""".format(os.path.basename(reference), '\n'.join(["Name : {} Score : {}".format(os.path.basename(n),s) for n,s in knn])))
-
+    Neighbors : 
+    {}
+    """.format(os.path.basename(reference), '\n'.join(["Name : {} Score : {}".format(os.path.basename(n),s) for n,s in knn])))
+    keep_going = (input("Would you like to run another query ? (y/n):" ).lower()=="y")
